@@ -1,0 +1,57 @@
+//面试题1：如下为类型CMYSstring的声明，请为该函数添加赋值运算符函数
+#include<iostream>
+#include<cstring>
+//赋值运算符函数返回类型为类&（只有是类引用才可以进行连续赋值）
+class CMyString
+{
+public:
+	CMyString()
+	{
+		m_pData = new char[1];
+        m_pData[0] = '\0';
+	}
+	CMyString(char* pData)
+	{
+		//构造函数，必须先给m_pData重新申请空间
+
+		m_pData=new char[strlen(pData)+1];
+		strcpy(m_pData,pData);
+	}
+	//拷贝构造函数，参数是一个本类的对象的常引用
+	//拷贝构造函数是用一个已存在的对象生成一个相同类型的新对象，一般默认的拷贝构造函数是浅拷贝，但是有指针需要用深拷贝，防止一块内存多次释放，导致程序崩溃
+	CMyString(const CMyString& str)//传引用是防止递归调用拷贝构造形参
+	{
+
+		m_pData=new char[strlen(str.m_pData)+1];
+		strcpy(m_pData,str.m_pData);
+	}
+	//赋值运算符函数
+	//赋值运算符函数是把一个已存在的对象赋给一个相同类型的已存在对象
+	//参数const的作用：防止形参被修改，接收隐式生成的临时量
+	CMyString& operator=(const CMyString& str)
+	{
+		//判断是不是自赋值
+		if(this==&str)
+		{
+			return *this;
+		}
+		//清理旧资源
+		delete []m_pData;
+		//申请空间,赋新资源
+		m_pData=new char[strlen(str.m_pData)+1];
+		strcpy(m_pData,str.m_pData);
+		return *this;
+	}
+//析构函数，做销毁清理资源
+	~CMyString()
+	{
+		delete []m_pData;//清理资源
+	}
+	void Print()
+	{
+		printf("%s", m_pData);
+	}
+
+private:
+	char* m_pData;
+};
