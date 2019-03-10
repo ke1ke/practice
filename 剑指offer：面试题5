@@ -1,0 +1,50 @@
+//面试题5：替换空格
+//题目：请实现一个函数，把字符串中的每个空格替换成“%20".
+//原来的空格字符串，在经过字符替换后，字符串的长度会增长
+
+//先统计空格的数目，从后往前替换
+#include<iostream>
+void ReplaceBlank(char string[],int length)
+{
+	if(string==NULL||length<=0)
+	{
+		return ;
+	}
+	int oldlength=0;
+	int numberOfBlank=0;
+	int i=0;
+	while(string[i]!='\0')
+	{
+		++oldlength=0;
+
+		if(string[i]==' ')//遍历得到空格的数目
+		{
+			++numberOfBlank;
+		}
+		++i;
+	}
+	//计算出替换后的字符串的长度
+	int newlength=oldlength+numberOfBlank*2;
+	if(newlength<length)
+	{
+		return;
+	}
+	//必须从后往前进行遍历，防止数据被覆盖
+	int iold=length;
+	int inew=newlength;
+	while(iold>=0&&inew>iold)
+	{
+		if(string[iold]!=' ')//如果遍历的时候没有遇到空格则一直往后移
+		{
+			string[inew--]=string[iold];
+		}
+		else
+		{
+			string[inew--]='0';
+			string[inew--]='2';
+			string[inew--]='%';
+		}
+		--iold;//一直往前遍历
+	}
+
+}
