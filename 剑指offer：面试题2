@@ -1,0 +1,28 @@
+//面试题2：实现一个single模式
+//设计一个类我们只能生成该类的一个实例
+#include<iostream>
+class Single
+{
+
+	//屏蔽生成对象的接口（拷贝构造函数和构造函数）
+	//提供唯一生成该对象的接口,返回值为类*或者类&
+	//摆脱对对象的依赖
+public:
+		static Single* Instance()
+		{
+			//双重锁机制，线程安全版本的单例模式
+			if(psing==NULL)
+			{
+				if(psing==NULL)
+				{
+					psing=new Single();
+				}
+			}
+			return psing;
+		}
+private:
+	Single();
+	Single(const Single& str);
+	static Single* psing;//唯一的对象,静态成员变量需要在类外初始化
+};
+Single* Single::psing = NULL;
