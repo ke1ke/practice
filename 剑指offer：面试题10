@@ -1,0 +1,36 @@
+//面试题10：斐波那契数列
+
+//题目一：求斐波那契数列的第n项
+//写一个函数，输入n，求斐波那契的第n项
+
+//若用递归求解则要计算很多重复项，所以先从下往上算，可以避免重复
+
+long long Fibonacci(unsigned n)
+{
+	int result[2]={0,1};//斐波那契数列的前两个数是定值
+
+	if(n<2)
+	{
+		return result[n];
+	}
+
+	long long fibN1=1;
+	long long fibN2=0;
+	long long fibN=0;
+
+	for(unsigned int i=2;i<=n;i++)
+	{
+		fibN = fibN1+fibN2;
+
+		fibN2=fibN1;
+		fibN1=fibN;
+	}
+
+	return fibN;
+}
+
+//题目2：青蛙跳台阶问题
+//一只青蛙可以跳上一级台阶也可以跳上二级台阶，求该青蛙跳上n级台阶有多少种跳法
+//第一次跳有两种选择，一是跳1节剩下的就要看后面f(n-1)的跳法
+//                    二是跳2节剩下的就是看后面f(n-2)的跳法
+//即：f(n)=f(n-1)+f(n-2)
