@@ -1,0 +1,30 @@
+//面试题6：从尾到头打印链表
+//题目：输入一个链表的头结点，从尾到头反过来打印每个节点的值
+#include<iostream>
+#include<stack>
+struct ListNode
+{
+	int m_nKey;
+	ListNode* m_pNext;
+};
+//逆着打印链表，不希望改变链表结构，可以使用栈“先进后出”先遍历的后打印
+
+void PrintListReversingly(ListNode * pHead)
+{
+	std::stack<int> node;//申请一个栈存储链表中结点的值
+
+	ListNode* pNode=pHead;
+	while(pNode!=NULL)
+	{
+		node.push(pNode->m_nKey);//每遍历一次，入栈一次
+		pNode=pNode->m_pNext;
+	}
+
+	while(!node.empty())
+	{
+		//循环遍历取栈顶元素，打印，并且出栈
+		int temp=node.top();
+		std::cout<<temp<<" ";
+		node.pop();
+	}
+}
