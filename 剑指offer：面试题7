@@ -1,0 +1,69 @@
+//面试题7：重建二叉树
+//题目;输入某二叉树的前序遍历和中序遍历的结果，请重建该二叉树，假设输入的前序遍历和中序遍历的结果中都不含重复的数字
+# include<iostream>
+
+struct BinaryTreeNode
+{
+	int m_nValue;
+	BinaryTreeNode* m_pLeft;
+	BinaryTreeNode* m_pRight;
+};
+//中序遍历-----》左 根  右（中序遍历根的左边为左子树，右边为右子树）
+//前序遍历-----》根 左  右（前序遍历的第一个节点为第一个根节点）
+BinaryTreeNode* ConstructCore(int* spreorder,int* sinorder,int* epreorder,int* einorder);
+
+BinaryTreeNode* Construct(int* preorder,int* inorder,int length)//preorder-->前序，inorder-->中序
+{
+	if(preorder==NULL||inorder==NULL||length<0)
+	{
+		return NULL;
+	}
+
+	return ConstructCore(preorder,inorder,preorder+length-1,inorder+length-1);
+}
+
+BinaryTreeNode* ConstructCore(int* spreorder,int* sinorder,int* epreorder,int* einorder)
+{
+	int r=spreorder[0];//先序遍历的第一个节点为根结点
+	//先创建一个根结点
+	BinaryTreeNode* root=new BinaryTreeNode();
+	root->m_nValue=r;
+	root->m_pLeft=root->m_pRight=NULL;
+	
+	//如果只有一个节点,或者两个序列不匹配
+	if(spreorder==epreorder)
+	{
+		if(spreorder==epreorder && sinorder==einorder)
+		{
+			return root;
+		}
+		else
+		{
+			printf("错误的输入");
+		}
+	}
+	//在中序遍历中找到根结点
+	int* p=sinorder;
+	while(*p!=r && p!=einorder)
+	{
+		++p;
+	}
+	//如果遍历完没找到，说明两个序列不匹配
+	if(p==einorder && *p!=r)
+	{
+		printf("错误的输入");
+	}
+
+	int leftLength=p-sinorder;//左子树的长度
+	int* leftEpreorder=sinorder+leftLength;//左子树的先序序列的末尾结点,p-1为左子树中序遍历的末尾结点
+
+	//分别构建左右子树
+
+	if(leftLength>0 && leftLength<epreorder-spreorder)
+	{
+		root->m_pLeft=ConstructCore(spreorder,sinorder,leftEpreorder,p-1);//左子树
+		root->m_pRight=ConstructCore(leftEpreorder+1,p+1,leftEpreorder,einorder);//右子树
+	}
+	
+	return root;
+}
