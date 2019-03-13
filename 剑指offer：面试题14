@@ -1,0 +1,51 @@
+//面试题14：剪绳子
+//题目：给你一根长度为n的绳子，请把绳子剪成m段，（m,n都是整数n>1且m>1），每段绳子的长度记为K[0],k[1],...k[m]
+//请问k[0]*k[1]*k[2]...*k[m]的最大乘积是多少？
+
+//思路：用动态规划：递归去求解。在剪第一刀的时候，有n-1中选择f(n)=f(n-i)*f(i)
+//递归会存在相同子问题重复计算的问题
+
+#include<iostream>
+
+int maxProductAfterCutting(int length)
+{
+	if(length<2)//绳长为1
+	{
+		return 0;
+	}
+	if(length==2)//绳长为2
+	{
+		return 1;
+	}
+	if(length==3)
+	{
+		return 2;//绳长为3时可以剪成两段1*2或者剪成三段1*1*1所以直接选择1*2
+	}
+	
+	//申请一个新空间存放每个子问题的最优解，（为计算i+1绳长来服务）
+	int* products=new int[length+1];
+
+	products[0]=0;//
+	products[1]=1;//绳长为1时,子问题的最优解为1（即把绳长1的绳子不剪）
+	products[2]=2;//绳长为2时，子问题的最优解为2（即把绳长2的绳子不剪）
+	products[3]=3;//绳长为3时，子问题的最优解为3（即把绳长3的绳子不剪）
+
+	int max=0;
+	for(int i=4;i<=length;i++)
+	{
+		max=0;
+		for(int j=1;j<=i/2;++j)
+		{
+			int product=products[j]*products[i-j];
+			if(max<product)
+			{
+				max=product;
+				products[i]=max;
+			}
+		}
+	}
+		max=products[length];
+		delete[] products;
+
+		return max;
+}
