@@ -1,0 +1,66 @@
+//面试题12：矩阵中的路径
+
+//题目：设计一个函数，用来判断在一个路径中是否存在一条包含某字符串的所有字符的路径。路径可以从矩阵中的任意一格开始，
+//每一步可以在矩阵中向左、右、上、下移动一格。如果一条路径经过了矩阵的某一格，那么该路径不能再次进入该格子。
+//（有点类似五子棋上下左右棋子的落点）
+
+//思路：利用回溯法，如果路径中第i个位置的值等于要查找的字符串的第i个位置的格子，则说明该路径当前有效可以继续查找，否则该路径无效
+//应该回溯到上一步重新选择i位置
+#include<iostream>
+bool hasPathCore(const char* matrix,int rows,int cols,int row,int col,const char* str,int& pathLength,bool* visited)
+{
+	if(str[pathLength]=='\0')
+	{
+		return true;
+	}
+
+	bool hasPath=false;
+	
+	if(row>=0&&row<rows&&col>=0&&col<cols//合理条件的判断
+		&&matrix[row*col+col]==str[pathLength]//路径的这个位置的字符等于要查找的目标字符串中的pathLength位置的字符
+		&&!visited[row*col+col])//矩阵该位置还没有被这条路径走过
+	{
+		++pathLength;//查找的目标字符位置+1
+		visited[col*row+col]=true;//二维数组中该位置已经失效
+
+		hasPath=hasPathCore(matrix,rows,cols,row,col-1,str,pathLength,visited)//往上面走一步
+			||hasPathCore(matrix,rows,cols,row,col+1,str,pathLength,visited)//往下面走一步
+			||hasPathCore(matrix,rows,cols,row-1,col,str,pathLength,visited)//往左边走一步
+			||hasPathCore(matrix,rows,cols,row+1,col,str,pathLength,visited);//往右边走一步
+
+		if(!hasPath)//如果没找到则回溯到上一步并且把上一步的现场复原重新选择路径
+		{
+			--pathLength;
+			visited[row*col+col]=false;
+		}
+
+	}
+		return hasPath;
+}
+
+bool hasPath(const char* matrix,int rows,int cols,const char* str)//matrix矩阵， rows横坐标，cols纵坐标，str需要查找的字符串
+{
+	if(matrix==NULL||rows<1||cols<1||str==NULL)
+	{
+		return false;
+	}
+
+	bool* visited=new bool[rows*cols];//新建一个二维矩阵，用来标识路径是否已经进过了这个格子
+	memset(visited,0,rows*cols);
+
+	int pathLength=0;//路径的长度
+
+	//从二维数组的[0][0]开始作为路径的入口一直循环直到找到一条路径为止
+	for(int row=0;row<rows;++row)
+	{
+		for(int col=0;col<cols;col++)
+		{
+			if(hasPathCore(matrix,rows,cols,row,col,str,pathLength,visited))//如果从ij口如找到了目标字符串返回真
+			{
+				return true;
+			}
+		}
+	}
+	delete[]visited;
+	return false;
+}
