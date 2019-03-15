@@ -1,0 +1,50 @@
+//面试题19：正则表达式匹配
+//题目：请实现一个函数用来匹配包含“."和“*”的正则表达式。模式中的字符“.”表示任意字符，而“*”则表示它前面的字符可以出现任意次（含0次）
+//在本题中，匹配是指字符串的所有字符匹配整个模式。例如，字符串“aaa”与模式“a.a”和“ab*ac*a”匹配，但与“aa.a”和“ab*a”均不匹配。
+//思路：先用字符串中的每一个字符和模式中的字符去匹配，如果模式中的字符是“.”可以和任何一个字符匹配，只需要继续判断接下来的字符是否匹配
+//如果是“*”需要看源字符串需要什么
+#include<iostream>
+#include<cstring>
+
+bool matchCore(const char* str,const char *pattern)
+{
+	//str和pattern都是空字符串
+	if(*str=='\0' && *pattern=='\0')
+	{
+		return true;
+	}
+	//当模式为空字符串，匹配字符串不为空
+	if(*str!='\0' && *pattern=='\0')
+	{
+		return false;
+	}
+
+   //模式中当前匹配元素的下一个字符为‘*’，要么忽略它和‘*’,要么让它出现n次（n=1,2,3）
+	if(*(pattern+1)=='*')
+	{
+		//当前字符匹配上
+		if(*str==*pattern||(*pattern=='.'&&*str!='\0'))
+		{
+			return matchCore(str+1,pattern+2)||//(aab----->a*ab----->跳两个（让它前面的数出现1次）)
+				matchCore(str,pattern+2)||//（aab----->a*aab----->跳两个(让它前面的数出现0次)）
+				matchCore(str+1,pattern);//(aab----->a*b------>让它前面的数出现n次（n>1）)
+		}
+		else//当前字符没匹配上，直接跳过两个字符（aab----->c*aab----->c没匹配上且c后面为*则跳过c和*从*后面的位置开始匹配）
+		{
+			return matchCore(str,pattern+2);
+		}
+	}
+	if(*str==*pattern||(*pattern=='.'&&*str!='\0'))
+	{
+		return matchCore(str+1,pattern+1);
+	}
+	return false;
+}
+bool match(const char* str,const char* pattern)
+{
+	if(str==NULL||pattern==NULL)
+	{
+		return false;
+	}
+	return matchCore(str,pattern);
+}
