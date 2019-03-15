@@ -1,0 +1,84 @@
+//面试题18：删除链表的节点
+//题目一：在O(1)时间内删除链表的节点
+//给定单向链表的头指针和一个节点指针，定义一个函数在O(1)时间内删除该结点。
+//思路：要删除一个节点，把它后面的节点的值覆盖当前要删除结点的值，再删除后面的结点
+#include<iostream>
+
+struct ListNode
+{
+	int m_nValue;
+	ListNode* m_pNext;
+};
+ListNode* CreateListNode(int value)
+{
+    ListNode* pNode = new ListNode();
+    pNode->m_nValue = value;
+    pNode->m_pNext = nullptr;
+
+    return pNode;
+}
+void DeleteNode(ListNode* pListHead,ListNode* pToBeDelete)
+{
+	if(pListHead!=NULL && pToBeDelete!=NULL)
+	{
+		return;
+	}
+	
+	//链表只有一个节点
+	if(pListHead==pToBeDelete)
+	{
+		delete pToBeDelete;
+		pToBeDelete=NULL;
+		pListHead = NULL;
+	}
+	//需要考虑边界问题，如果要删除的节点是尾节点则直接删除，不用覆盖
+	else if(pToBeDelete->m_pNext==NULL)
+	{
+		ListNode* p=pListHead;
+		while(p->m_pNext!=pToBeDelete)
+		{
+			p=p->m_pNext;
+		}
+		delete pToBeDelete;
+		pToBeDelete=NULL;
+		p->m_pNext=NULL;
+	}
+	else
+	{
+		ListNode* pNext=pToBeDelete->m_pNext;
+		pToBeDelete->m_nValue=pNext->m_nValue;//把后面位置的值拷到前面
+		pToBeDelete->m_pNext=pNext->m_pNext;//指向下一个节点的下一个位置
+		
+		delete pNext;
+		pNext=NULL;
+	}
+}
+//题目二：删除链表中重复节点
+//题目：在一个排序的链表中，如何删除重复节点。
+//思路：遍历找当前节点是否与下一个节点的值相等，如果相等就删除它的下一个节点，否则指针后移
+void DeleteDuplication(ListNode** phead)
+{
+	if(phead==NULL || *phead==NULL)
+	{
+		return;
+	}
+	ListNode* p=*phead;
+	ListNode* pNext;
+
+	while(p->m_pNext!=NULL)
+	{
+		pNext=p->m_pNext;
+
+		if(p->m_nValue == pNext->m_nValue)
+		{
+			p->m_pNext=pNext->m_pNext;//指向下一个节点的下一个位置
+		
+			delete pNext;
+			pNext=NULL;
+		}
+		else
+		{
+			p=pNext;
+		}
+	}
+}
