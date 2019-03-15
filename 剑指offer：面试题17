@@ -1,0 +1,102 @@
+//面试题17：打印从1到最大的n位数
+//题目：输入数字n,按顺序打印出从1到最大的n位十进制数。比如输入3，则打印出1、2、3一直到999
+
+//思路：一直打印到小于10的n次方。
+//考虑到大数问题，用字符串一个字符表示数字的一位。需要解决字符串的加法，打印字符串（以数字的形式）
+//字符串的加法：需要考虑到进位以及是否溢出
+#include<iostream>
+#include<cstring>
+
+//进行加法
+bool Increment(char* number)//number存储的是每次需要打印的数字的字符形式，按照习惯个位数在字符串的最后边
+{
+	bool isOverflow=false;//是否溢出
+	int nTakeOver=0;//是否进位
+	int length=strlen(number);
+	for(int i=length-1;i>=0;i--)
+	{
+		int sum=number[i]-'0'+nTakeOver;//需要把之前计算的进位在这里加上
+		if(i==length-1)
+		{
+			sum++;
+		}
+		if(sum>=10)
+		{
+			if(i==0)//产生了溢出
+			{
+				isOverflow=true;
+			}
+			else
+			{
+				nTakeOver=1;//只是产生了进位
+				sum-=10;
+				number[i]='0'+sum;
+			}
+		}
+		else
+		{
+			number[i]='0'+sum;
+			break;//一次加法完成跳出循环
+		}
+	}
+	return isOverflow;
+}
+
+//打印字符串----》数字-----》需要考虑字符串中存储的字符前面几位是不是有效位0098，前面的00不是有效位不应该打印出来
+void PrintNumber(char* number)
+{
+	bool isBeginning0=true;
+	int length=strlen(number);//strlen对于数组字符串求出的长度是数组的大小
+
+	for(int i=0;i<length;++i)
+	{
+		if(isBeginning0 && number[i]!='0')
+		{
+			isBeginning0=false;
+		}
+
+		if(!isBeginning0)
+		{
+			printf("%c",number[i]);
+		}
+	}
+	printf("\t");
+}
+
+void Print1ToNDigits(int n)
+{
+	if(n<=0)
+	{
+		return;
+	}
+	char* number=new char[n+1];
+	memset(number,'0',n);
+	number[n]='\0';
+
+	while(!Increment(number))//如果没有溢出就打印
+	{
+		PrintNumber(number);
+	}
+	delete []number;//*******注意一定要delete掉new的内存
+}
+
+// ====================测试代码====================
+void Test(int n)
+{
+    std::cout<<"Test for"<<n<<"begins:"<<std::endl;
+
+   Print1ToNDigits(n);
+
+  std::cout<<"Test for" <<n<<"ends."<<std::endl;
+}
+
+int main(int argc, char* argv[])
+{
+    Test(1);
+    Test(2);
+    Test(3);
+    Test(0);
+    Test(-1);
+
+    return 0;
+}
