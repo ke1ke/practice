@@ -1,0 +1,32 @@
+//面试题27：二叉树的镜像
+//题目：请完成一个函数，输入一颗二叉树，该函数输出它的镜像。
+
+//思路：把一个节点的左右子树调换位置
+#include<iostream>
+#include"BinaryTree.h"
+
+void mirrorRecursively(BinaryTreeNode* pRoot)
+{
+	if(pRoot==NULL)
+	{
+		return;
+	}
+	if(pRoot->leftchild==NULL && pRoot->rightchild==NULL)//左右子树都为空没必要交换
+	{
+		return;
+	}
+	//左右子树进行交换
+	BinaryTreeNode* tmp=pRoot->leftchild;
+	pRoot->leftchild=pRoot->rightchild;
+	pRoot->rightchild=tmp;
+
+	if(pRoot->leftchild!=NULL)
+	{
+		mirrorRecursively(pRoot->leftchild);//处理左子树的镜像
+	}
+
+	if(pRoot->rightchild!=NULL)
+	{
+		mirrorRecursively(pRoot->rightchild);//处理右子树的镜像
+	}
+}
