@@ -1,0 +1,30 @@
+//面试题28：对称的二叉树
+//题目：请实现一个函数，用来判断一颗二叉树是不是对称的。如果一颗二叉树和它的镜像一样，那么它是对称的。
+
+//1.在遍历的过程中考虑空指针，需要重新定义一种遍历方法使得遍历出来的结果是它的镜像（以先序遍历为例，新定义的遍历方法需要先遍历右子树再遍历左子树）
+#include<iostream>
+#include"BinaryTree.h"
+
+bool isSymmetrical(BinaryTreeNode* pRoot1,BinaryTreeNode* pRoot2)
+{
+	if(pRoot1==NULL && pRoot2==NULL)
+	{
+		return true;
+	}
+	if(pRoot1==NULL || pRoot2==NULL)
+	{
+		return false;
+	}
+	if(pRoot1->m_Value != pRoot2->m_Value)
+	{
+		return false;
+	}
+
+	return isSymmetrical(pRoot1->leftchild,pRoot2->rightchild) && isSymmetrical(pRoot1->rightchild,pRoot2->leftchild);//判断一个数与它的镜像。
+}
+
+bool isSymmetrical(BinaryTreeNode* pRoot)
+{
+	return isSymmetrical(pRoot,pRoot);//一个作为原树，一个作为镜像
+}
+
