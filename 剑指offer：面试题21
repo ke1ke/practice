@@ -1,0 +1,79 @@
+//面试题21：调整数组顺序使基数位于偶数前面
+//题目：输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有奇数位于数组的前半部分，所有偶数位于数组的后半部分
+
+//遍历数组时发现偶数位于奇数前面就把它位置交换时间复杂度
+#include<iostream>
+//只适合于进行奇偶交换
+void ReorderOddEven1(int* pData,unsigned int length)
+{
+	if(pData==NULL||length==0)
+	{
+		return;
+	}
+
+	int* p=pData;//循环开始条件
+	int* q=pData+length-1;//循环结束条件
+
+	while(p<q)
+	{
+		//移动p指针直到它指向一个偶数
+		while(p<q && (*p & 0x1)!=0)
+		{
+			p++;
+		}
+		//往前移动q直到它指向一个奇数
+		while(p<q && (*q & 0x1)==0)
+		{
+			q--;
+		}
+
+		if(p<q)
+		{
+			//找到一个偶数在奇数前面，进行交换
+			int temp=*p;
+			*p=*q;
+			*q=temp;
+		}
+	}
+}
+
+//设计一个通用的？
+//通用的设计只需要修改判断条件，可以把判断的条件设置为一个函数指针，需要时直接调用就可以
+bool isEven(int n)
+{
+	return (n & 0x1)==0;
+}
+
+void Reorder(int* pData,unsigned int length,bool (*Fun)(int))
+{
+	if(pData == NULL || length<0)
+	{
+		return;
+	}
+
+	int* p=pData;
+	int* q=pData+length -1;
+
+	while(p<q)
+	{
+		while(p<q && !Fun(*p))
+		{
+			p++;
+		}
+		while(p<q && Fun(*q))
+		{
+			q--;;
+		}
+
+		if(p<q)
+		{
+			int temp=*p;
+			*p=*q;
+			*q=temp;
+		}
+	}
+}
+void ReorderOddEven2(int* pData,unsigned int length)
+{
+	Reorder(pData,length,isEven);
+}
