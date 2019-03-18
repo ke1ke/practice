@@ -1,0 +1,44 @@
+//面试题22:链表中倒数第K个节点
+//题目：输入一个链表，输出该链表中倒数第K个节点。
+
+//思路：得到链表中倒数第k个节点，可以定义两个指针，其中一个指针先走k步，然后两个指针一起走直到第二个指针走到最后一个位置就得到了链表的倒数第K个节点。
+#include<iostream>
+#include"list.h"
+//struct ListNode
+//{
+//	int m_nValue;
+//	ListNode* m_pNext;
+//};
+
+ListNode* FindKthToTail(ListNode* pListHead,unsigned int k)
+{
+	//要注意对于空链表以及查找位置的合理性的判断
+	if(pListHead == NULL || k==0)
+	{
+		return NULL;
+	}
+
+	ListNode *pA=pListHead ;
+	ListNode *pB=NULL;
+
+	for(unsigned int i=0;i<k-1;i++)
+	{
+		//注意对于空指针的随时检查
+		if(pA->m_pNext != NULL)
+		{
+			pA =pA ->m_pNext;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	pB =pListHead ;
+	while(pA->m_pNext !=NULL)
+	{
+		pA =pA ->m_pNext;
+		pB =pB ->m_pNext;
+	}
+	return pB;
+}
