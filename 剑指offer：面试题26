@@ -1,0 +1,69 @@
+//面试题26：树的子结构
+//题目：输入两棵二叉树A和B判断B是不是A的子结构。二叉树的节点定义如下
+
+#include<iostream>
+#include<cmath>
+struct BinaryTreeNode
+{
+	double m_Value;
+	BinaryTreeNode* leftchild;
+	BinaryTreeNode* rightchild;
+};
+bool Equal(int key1,int key2)
+{
+	/*if(key1==key2)//掉坑的做法，本题的m_Value是double类型
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}*/
+	if((key1-key2>-0.0000001)&&(key1-key2<0.0000001))
+	{
+		return true;
+	}
+	return false;
+}
+bool DoesTreeHaveTree2(BinaryTreeNode* pRoot1,BinaryTreeNode* pRoot2)
+{
+	if(pRoot1==pRoot2)//同一棵树返回真
+	{
+		return true;
+	}
+	if(pRoot1==NULL)
+	{
+		return false;
+	}
+	if(pRoot2==NULL)
+	{
+		return true;
+	}
+
+	if(!Equal(pRoot1->m_Value,pRoot2->m_Value))
+	{
+		return false;
+	}
+
+	return DoesTreeHaveTree2(pRoot1->leftchild,pRoot2->leftchild)&&DoesTreeHaveTree2(pRoot1->rightchild,pRoot2->rightchild);
+
+}
+bool HasSubtree(BinaryTreeNode* pRoot1,BinaryTreeNode* pRoot2)
+{
+	bool result;//记录返回结果的变量
+
+	if(Equal(pRoot1->m_Value,pRoot2->m_Value))//先判断两树的根是不是相等
+	{
+		result=DoesTreeHaveTree2(pRoot1,pRoot2);
+	}
+	if(!result)//根相等了但是并不是子树，需要继续左右的遍历
+	{
+		result=DoesTreeHaveTree2(pRoot1->leftchild,pRoot2);//继续在左子树寻找
+	}
+	if(!result)
+	{
+		result=DoesTreeHaveTree2(pRoot1->rightchild,pRoot2);//左子树每找到，继续在右子树寻找
+	}
+
+	return result;
+}
