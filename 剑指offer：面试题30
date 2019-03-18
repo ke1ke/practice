@@ -1,0 +1,41 @@
+//面试题30：包含min函数的栈
+//题目：定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的min函数，在该栈中，调用min、push、及pop的时间复杂度都是O(1)
+
+//思路：每次压栈入栈都要知道栈中的最小元素 。定义另一个辅助栈每次压栈入栈时存放/取出数据栈的最小值
+#include<iostream>
+#include<stack>
+template <typename T>
+class StackMin
+{
+public:
+	void push(const T& val)
+	{
+		data.push(val);
+
+		if(min.size()==0||val<min.top())
+		{
+			min.push(val);
+		}
+		else
+		{
+			min.push(min.top());//若入栈元素比min栈中栈顶元素大，再把栈顶元素入栈一次
+		}
+	}
+	void pop()
+	{
+		assert(data.size()>0 && min.size>0);
+
+		data.pop();
+		min.pop();
+	}
+	const T& getMin()
+	{
+		assert(data.size()>0 && min.size>0);
+
+		return min.top();
+	}
+private:
+
+	std::stack<T> data;//数据栈
+	std::stack<T> min;//辅助栈存放每次出栈入栈的最小值
+};
