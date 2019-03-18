@@ -1,0 +1,79 @@
+//面试题23：链表中环的入口节点
+//题目：如果一个链表中包含环，如何找出环的入口地点？
+
+//思路：利用快慢指针先找到链表是否有环，并且找到环中的任意一个节点，计算出环中元素的个数K，再定义两个指针让其中一个指针先走k步。
+//两个指针一起移动直到他们相遇则找到函数的入口地址
+
+//基于环的情况先找到环中的一个节点
+#include"list.h"
+#include<iostream>
+
+ListNode* MeetingNode(ListNode* pHead)
+{
+	if(pHead == NULL)
+	{
+		return NULL;
+	}
+
+	ListNode* pA=pHead->m_pNext;//慢的指针，慢指针每次走一下
+	if(pA==NULL)
+	{
+		return NULL;
+	}
+	ListNode* pB=pA->m_pNext;//快的指针,快指针每次走两下
+
+	while(pA!=NULL && pB!=NULL)
+	{
+		if(pA == pB)
+		{
+			return pB;
+		}
+
+		pA=pA->m_pNext ;
+
+		pB=pB->m_pNext ;
+		if(pB != NULL)//注意空指针的判断。
+		{
+			pB=pB->m_pNext ;
+		}
+	}
+	return NULL;
+}
+
+ListNode* EntryLoop(ListNode* pHead)
+{
+	if(pHead == NULL)
+	{
+		return NULL;
+	}
+	ListNode* meetingNode=MeetingNode(pHead);//得到环中的节点
+	if(meetingNode == NULL)
+	{
+		return NULL;
+	}
+
+	int count=1;//环中结点的个数
+	ListNode* pNode=meetingNode ;
+	while(pNode->m_pNext != meetingNode)
+	{
+		pNode=pNode->m_pNext;
+		count++;
+	}
+
+	//然后重新定义两个指针，其中一个指针先走count步，然后两个指针一起走直到相遇。
+
+	ListNode* p1=pHead;//第一个指针先走count步
+	for(int i=0;i<count;i++)
+	{
+		p1=p1->m_pNext;
+	}
+	ListNode* p2=pHead;
+
+	while(p1 != p2)//两个指针一起走，直到相遇然后返回
+	{
+		p1=p1->m_pNext;
+		p2=p2->m_pNext;
+	}
+
+	return p1;
+}
